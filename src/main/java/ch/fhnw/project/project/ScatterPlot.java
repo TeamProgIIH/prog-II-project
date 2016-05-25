@@ -2,18 +2,20 @@ package ch.fhnw.project.project;
 
 
 import ch.fhnw.project.project.DataModel.DataContainer;
+import ch.fhnw.project.project.input.TextFileReader;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.*;
 import javafx.geometry.Insets;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ColorPicker;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -23,15 +25,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.awt.*;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ScatterPlot {
 
-    public static Pane creatterScatterPane(List<DataContainer> dataContainerList){
+    public static File file;
 
-        List<DataContainer> List1 = dataContainerList;
-
+    public static Pane creatterScatterPane( List<DataContainer> List1){
 
         //create Widgets
         CheckBox timeLine = new CheckBox("Show Time Line");
@@ -41,13 +43,30 @@ public class ScatterPlot {
         Label sliderLAbel = new Label("Change Point Size");
 
 
+
+
+
+
+
+
+
+
+
+
         //Create Pane
 
         ScatterChart<Number,Number> sc = getsc(List1,pointSizeSlider,cP,timeLine);
         LineChart<Number,Number> lc = getlc(List1,timeLine,cP);
 
+
+
         sc.lookup(".chart-plot-background").setStyle("fx-background-color:transparent");
         lc.setVisible(false);
+        lc.lookup(".chart-plot-background").setStyle("fx-background-color:transparent");
+        sc.setVisible(true);
+
+
+
 
         //Checkbox Commands
         timeLine.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -55,8 +74,10 @@ public class ScatterPlot {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if(oldValue){
                     lc.setVisible(false);
+                    sc.setVisible(true);
                 } else{
                     lc.setVisible(true);
+                    sc.setVisible(false);
                 }
 
             }
@@ -66,11 +87,11 @@ public class ScatterPlot {
         //style pane
         HBox firstLine = new HBox();
         firstLine.getChildren().addAll(pointSizeSliderLaber,pointSizeSlider);
-        firstLine.setAlignment(Pos.CENTER);
+        firstLine.setAlignment(Pos.CENTER_LEFT);
         firstLine.setPadding(new Insets(5,5,5,5));
 
         HBox secondLine = new HBox();
-        secondLine.getChildren().addAll(pointSizeSliderLaber,pointSizeSlider);
+        secondLine.getChildren().addAll(timeLine);
         secondLine.setAlignment(Pos.CENTER);
         secondLine.setSpacing(20);
         secondLine.setPadding(new Insets(10,10,10,10));
@@ -79,7 +100,7 @@ public class ScatterPlot {
         scatterPane.getChildren().addAll(lc,sc);
         scatterPane.setAlignment(Pos.CENTER);
 
-        //scatterPane.setMaxWidht(600)
+
 
         VBox overAllBox = new VBox();
         overAllBox.getChildren().addAll(firstLine,secondLine,scatterPane);
@@ -93,27 +114,15 @@ public class ScatterPlot {
 
     }
 
-
     private static List<DataContainer> getlist()
     {
+        TextFileReader textFileReader = new TextFileReader(file);
+        List <DataContainer> List1 = textFileReader.getDataList();
 
-        List<DataContainer> List1=new LinkedList<>();
-
-        List<Double> a=new LinkedList<>();
-        a.add(3.0);a.add(1.0); a.add(4.0); a.add(6.0); a.add(5.0);
-        DataContainer var1= new DataContainer("Variable1");
-
-
-        List<Double> b=new LinkedList<>();
-        b.add(3.0);b.add(1.0); b.add(4.0); b.add(6.0); b.add(5.0);
-        DataContainer var2= new DataContainer("Variable2");
-
-        List1.add(var1);
-        List1.add(var2);
+        List1.get(0);
+        List1.get(1);
 
         return List1;
-
-
     }
 
 
@@ -126,6 +135,7 @@ public class ScatterPlot {
         xAxis.setLabel(List1.get(0).getVariableName());
         yAxis.setLabel(List1.get(1).getVariableName());
         ScatterChart<Number, Number> sc= new ScatterChart<Number, Number>(xAxis,yAxis);
+
 
         List<Double>a,b;
         a=List1.get(0).getValues();
@@ -154,8 +164,8 @@ public class ScatterPlot {
     private static LineChart<Number,Number> getlc(List<DataContainer> List1, CheckBox timeLine, ColorPicker cP){
         NumberAxis xAxis = new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel(" ");
-        yAxis.setLabel(" ");
+        xAxis.setLabel(List1.get(0).getVariableName());
+        yAxis.setLabel(List1.get(1).getVariableName());
         LineChart<Number, Number> lc = new LineChart<>(xAxis,yAxis);
 
         List<Double>a, b;
@@ -172,11 +182,11 @@ public class ScatterPlot {
 
 
         lc.getData().add(data1);
-        lc.setCreateSymbols(false);
+        lc.setCreateSymbols(true);
         lc.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
-        lc.setHorizontalGridLinesVisible(false);
-        lc.setVerticalGridLinesVisible(false);
-        lc.setLegendVisible(false);
+        lc.setHorizontalGridLinesVisible(true);
+        lc.setVerticalGridLinesVisible(true);
+        lc.setLegendVisible(true);
         return lc;
     }
 

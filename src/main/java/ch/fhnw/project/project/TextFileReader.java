@@ -1,5 +1,6 @@
 package ch.fhnw.project.project.input;
 import ch.fhnw.project.project.DataModel.DataContainer;
+import ch.fhnw.project.project.MainPane;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -29,9 +30,7 @@ public class TextFileReader {
     private enum ValidDataType {txt, lin};
 
 
-    public TextFileReader() {
 
-    }
 
 
 
@@ -53,6 +52,10 @@ public class TextFileReader {
         LOG.log(Level.WARNING, "Text File Reader could not be created because " +
                 "of non-existing or not supported file.");
     }*/
+
+    public TextFileReader(File file) {
+        this.file = file;
+    }
 
     /**
      * Returns the data containers in a List.
@@ -233,13 +236,20 @@ public class TextFileReader {
 
             @Override
             public void handle(ActionEvent event) {
-
+                chooseFile(fileChooser);
                 // Show open file dialog
                 file = fileChooser.showOpenDialog(primaryStage);
                 if (file != null) {
                     fileLabel.setText(file.getPath());
                     chooseFile(fileChooser);
                 }
+                print();
+                /*MainPane.createMainPain(getDataList());
+                StackPane pane = new StackPane(MainPane.createMainPain(dataContainerList));
+                Scene scene = new Scene(pane);
+                primaryStage.setScene(scene);
+                primaryStage.show();*/
+
 
             }
         });
@@ -271,18 +281,47 @@ public class TextFileReader {
             fileChooser.getExtensionFilters().add(extFilter1);
 
 
-        this.dataContainerMap = getDataContainerMap();
+        //this.dataContainerMap = getDataContainerMap();
     }
 
     public Map<String, DataContainer> getDataMap(){
-        return dataContainerMap;
+        Map<String, DataContainer> map = getDataContainerMap();
+        return map;
+    }
+
+    public List< DataContainer> getDataList(){
+        List< DataContainer> list = getDataContainerList();
+        return list;
     }
 
     public void print(){
 
-        Set<String> keys = dataContainerMap.keySet();
-        System.out.println("X: " + keys);
+
+        /*DataContainer dc1 = getDataList().get(0);
+        DataContainer dc2 = getDataList().get(1);*/
+
+
+        System.out.println("File: " + file.getName());
+        Set<String> keys = getDataMap().keySet();
+        System.out.println("Die Variablen in diesem File: " + keys);
+        System.out.println("Geben Sie eine Variable an: ");
+
+        Scanner wert = new Scanner(System.in);
+        String wert1 = wert.nextLine();
+
+        DataContainer dc = getDataMap().get(wert1);
+
+            if (dc != null) {
+                System.out.println(wert1 + ":" + dc.getValues());
+            }
+        /*System.out.println("File: " + file.getName());
+
+
+        if (dc1 != null && dc2 != null) {
+        System.out.println(dc1.getVariableName() + ": " + dc1.getValues());
+        System.out.println(dc2.getVariableName() + ": " + dc2.getValues());*/
+        }
 
     }
-}
+
 

@@ -1,6 +1,7 @@
 package ch.fhnw.project.project;
 
 import ch.fhnw.project.project.DataModel.DataContainer;
+import ch.fhnw.project.project.input.TextFileReader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.chart.BarChart;
@@ -12,16 +13,19 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by TheGod on 23.05.16.
- */
+
 public class Histogramm {
 
-    public static Pane createHistogram(List<DataContainer> dataContainerList){
-        List<DataContainer> List1 = dataContainerList;
+
+    public static File file;
+    public static Pane createHistogram( List<DataContainer> List1){
+
+
+
 
         VBox left = new VBox();
         left.getChildren().addAll(leftBarChart(List1));
@@ -119,7 +123,6 @@ public class Histogramm {
             series1.getData().add(lines);
             a = a + intervalWidht;
         }
-
         bc.getData().add(series1);
         bc.setTitle(List1.get(0).getVariableName());
         return bc;
